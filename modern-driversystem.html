@@ -38,6 +38,9 @@
         .filter-bar { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; }
         .filter-bar select { max-width:180px; }
         .empty { text-align:center; color:#888; padding:30px; }
+        .light-row { display:flex; align-items:center; gap:12px; margin-bottom:10px; }
+        .light-row label { margin-bottom:0; min-width:100px; }
+        .light-row select { max-width:150px; }
     </style>
 </head>
 <body>
@@ -54,7 +57,6 @@
     <button class="tab" data-tab="admin">🔐 管理后台</button>
 </div>
 
-<!-- ========== 填报页面 ========== -->
 <div id="form" class="tab-content">
     <div class="card">
         <h2>车辆日常检查记录表</h2>
@@ -64,10 +66,10 @@
                     <label>司机姓名</label>
                     <select id="driver" required>
                         <option value="">— 请选择 —</option>
-                        <option>Uncle Alan（正式）</option>
-                        <option>Uncle A（正式）</option>
-                        <option>Uncle Brandon（正式）</option>
-                        <option>Uncle How（兼职）</option>
+                        <option>Uncle Alan</option>
+                        <option>Uncle A</option>
+                        <option>Uncle Brandon</option>
+                        <option>Uncle How</option>
                     </select>
                 </div>
                 <div class="col group">
@@ -107,11 +109,42 @@
             </div>
 
             <div class="group">
-                <label>💡 车灯（近光/远光/转向/刹车灯/倒车灯）</label>
-                <select id="light">
-                    <option value="全部正常">✅ 全部正常</option>
-                    <option value="部分异常">⚠️ 有不亮/故障 — 见备注</option>
-                </select>
+                <label>💡 车灯检查</label>
+                <div class="light-row">
+                    <label>远光：</label>
+                    <select id="lightHigh">
+                        <option value="亮">✅ 亮</option>
+                        <option value="不亮">❌ 不亮</option>
+                    </select>
+                </div>
+                <div class="light-row">
+                    <label>近光：</label>
+                    <select id="lightLow">
+                        <option value="亮">✅ 亮</option>
+                        <option value="不亮">❌ 不亮</option>
+                    </select>
+                </div>
+                <div class="light-row">
+                    <label>刹车灯：</label>
+                    <select id="lightBrake">
+                        <option value="亮">✅ 亮</option>
+                        <option value="不亮">❌ 不亮</option>
+                    </select>
+                </div>
+                <div class="light-row">
+                    <label>转向灯：</label>
+                    <select id="lightSignal">
+                        <option value="正常">✅ 正常</option>
+                        <option value="异常">❌ 异常</option>
+                    </select>
+                </div>
+                <div class="light-row">
+                    <label>倒车灯：</label>
+                    <select id="lightReverse">
+                        <option value="正常">✅ 正常</option>
+                        <option value="异常">❌ 异常</option>
+                    </select>
+                </div>
             </div>
 
             <div class="row">
@@ -196,7 +229,7 @@
 
             <div class="group" style="margin-top:20px;">
                 <label>📝 备注 / 异常情况说明</label>
-                <textarea id="remark" rows="3" placeholder="如有异常请写明位置、现象..."></textarea>
+                <textarea id="remark" rows="3" placeholder="如有不亮/异常请写明：如左后刹车灯不亮 / 右转向灯闪烁异常…"></textarea>
             </div>
 
             <button type="submit" class="btn btn-primary">✅ 提交检查记录</button>
@@ -205,17 +238,16 @@
     </div>
 </div>
 
-<!-- ========== 全部记录 ========== -->
 <div id="records" class="tab-content hidden">
     <div class="card">
         <h2>📋 全部检查记录</h2>
         <div class="filter-bar">
             <select id="filterDriver" onchange="renderAllRecords()">
                 <option value="">— 全部司机 —</option>
-                <option>Uncle Alan（正式）</option>
-                <option>Uncle A（正式）</option>
-                <option>Uncle Brandon（正式）</option>
-                <option>Uncle How（兼职）</option>
+                <option>Uncle Alan</option>
+                <option>Uncle A</option>
+                <option>Uncle Brandon</option>
+                <option>Uncle How</option>
             </select>
             <select id="filterPlate" onchange="renderAllRecords()">
                 <option value="">— 全部车牌 —</option>
@@ -230,7 +262,6 @@
     </div>
 </div>
 
-<!-- ========== 洗车台账 ========== -->
 <div id="wash" class="tab-content hidden">
     <div class="card">
         <h2>🧼 洗车记录台账</h2>
@@ -239,7 +270,6 @@
     </div>
 </div>
 
-<!-- ========== 管理后台 ========== -->
 <div id="admin" class="tab-content hidden">
     <div class="card">
         <h2>🔐 管理后台</h2>
@@ -250,10 +280,8 @@
 </div>
 
 <script>
-// 默认当天日期
 document.getElementById('checkDate').valueAsDate = new Date();
 
-// 标签页切换
 document.querySelectorAll('.tab').forEach(tab => {
     tab.addEventListener('click', () => {
         document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
@@ -265,7 +293,6 @@ document.querySelectorAll('.tab').forEach(tab => {
     });
 });
 
-// 洗车字段显示/隐藏
 function toggleWash(){
     const show = document.getElementById('doWash').value==='yes';
     document.getElementById('washFields').classList.toggle('hidden', !show);
@@ -274,7 +301,6 @@ function toggleWash(){
     }
 }
 
-// 照片预览
 function previewPhoto(input){
     const img = document.getElementById('photoPreviewImg');
     if(input.files && input.files[0]){
@@ -284,7 +310,6 @@ function previewPhoto(input){
     }
 }
 
-// 提交保存
 document.getElementById('checkForm').addEventListener('submit', e => {
     e.preventDefault();
     const record = {
@@ -294,7 +319,11 @@ document.getElementById('checkForm').addEventListener('submit', e => {
         date: document.getElementById('checkDate').value,
         period: document.getElementById('period').value,
         tire: document.getElementById('tire').value,
-        light: document.getElementById('light').value,
+        lightHigh: document.getElementById('lightHigh').value,
+        lightLow: document.getElementById('lightLow').value,
+        lightBrake: document.getElementById('lightBrake').value,
+        lightSignal: document.getElementById('lightSignal').value,
+        lightReverse: document.getElementById('lightReverse').value,
         oilChangeDate: document.getElementById('oilChangeDate').value || '未记录',
         mileage: document.getElementById('mileage').value || '未填写',
         water: document.getElementById('water').value,
@@ -318,7 +347,6 @@ document.getElementById('checkForm').addEventListener('submit', e => {
     document.getElementById('photoPreviewImg').classList.add('hidden');
 });
 
-// 渲染全部记录
 function renderAllRecords(){
     let records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]');
     const fd = document.getElementById('filterDriver').value;
@@ -330,13 +358,15 @@ function renderAllRecords(){
     if(!records.length){ container.innerHTML='<p class="empty">暂无记录</p>'; return; }
     
     container.innerHTML = records.map(r => {
-        const isAbnormal = ['异常','部分异常','不制冷','不足','有异常'].some(k => 
-            r.tire.includes(k)||r.light.includes(k)||r.ac.includes(k)||r.fuel.includes(k)||r.other.includes(k)
-        );
+        const hasLightIssue = [r.lightHigh, r.lightLow, r.lightBrake, r.lightSignal, r.lightReverse].some(x => x.includes('不亮') || x.includes('异常'));
+        const isAbnormal = r.tire.includes('异常') || hasLightIssue || r.ac.includes('不制冷') || r.fuel.includes('不足') || r.other.includes('异常');
+        
         return `
         <div class="record ${r.isWash==='yes'?'ok':''} ${isAbnormal?'warn':''}">
             <p class="meta">${r.date} · ${r.period} · ${r.driver}「车牌 ${r.plate}」</p>
-            <p>🛞车轮: ${r.tire} | 💡车灯: ${r.light}</p>
+            <p>🛞车轮: ${r.tire}</p>
+            <p>💡远光: ${r.lightHigh} | 近光: ${r.lightLow} | 刹车灯: ${r.lightBrake}</p>
+            <p>💡转向灯: ${r.lightSignal} | 倒车灯: ${r.lightReverse}</p>
             <p>🛢️换黑油: ${r.oilChangeDate} / ${r.mileage} km</p>
             <p>💧水: ${r.water} | ❄️冷气: ${r.ac} | ⛽油量: ${r.fuel}</p>
             <p>其他: ${r.other}</p>
@@ -347,7 +377,6 @@ function renderAllRecords(){
     }).join('');
 }
 
-// 渲染洗车台账
 function renderWashRecords(){
     const records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]').filter(r=>r.isWash==='yes');
     const container = document.getElementById('washList');
@@ -361,14 +390,15 @@ function renderWashRecords(){
     </div>`).join('');
 }
 
-// 导出CSV
 function exportData(){
     const records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]');
     if(!records.length){ alert('暂无记录'); return; }
     const csv = [
-        ['日期','时段','司机','车牌','车轮','车灯','上次换黑油日期','里程','水','冷气','油量','其他','是否洗车','洗车类型','备注'],
+        ['日期','时段','司机','车牌','车轮','远光','近光','刹车灯','转向灯','倒车灯','上次换黑油日期','里程','水','冷气','油量','其他','是否洗车','洗车类型','备注'],
         ...records.map(r => [
-            r.date, r.period, r.driver, r.plate, r.tire, r.light, r.oilChangeDate, r.mileage, r.water, r.ac, r.fuel, r.other,
+            r.date, r.period, r.driver, r.plate, r.tire,
+            r.lightHigh, r.lightLow, r.lightBrake, r.lightSignal, r.lightReverse,
+            r.oilChangeDate, r.mileage, r.water, r.ac, r.fuel, r.other,
             r.isWash==='yes'?'是':'否', r.washType, r.remark
         ])
     ].map(row => row.map(v=>`"${v}"`).join(',')).join('\n');
