@@ -1,0 +1,385 @@
+<modern-driversystem.html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>载送车辆检查系统 - 补习中心</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:"Microsoft YaHei", "Noto Sans SC", sans-serif; }
+        :root { --primary:#0052cc; --success:#009933; --warning:#ff9900; --danger:#e63300; --light:#f0f7ff; --gray:#f5f7fa; --text:#333; --border:#ccd6eb; }
+        body { background:#f0f7ff; padding:15px; max-width:950px; margin:0 auto; color:var(--text); }
+        header { text-align:center; padding:20px; background:#fff; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,82,204,.1); }
+        h1 { color:var(--primary); font-size:22px; margin-bottom:5px; }
+        .subtitle { color:#666; font-size:14px; }
+        .tabs { display:flex; gap:8px; margin-bottom:20px; flex-wrap:wrap; }
+        .tab { flex:1; min-width:120px; padding:12px; border:none; border-radius:8px; background:#fff; color:#555; cursor:pointer; font-size:15px; }
+        .tab.active { background:var(--primary); color:#fff; font-weight:bold; }
+        .card { background:#fff; border-radius:12px; padding:22px; margin-bottom:18px; box-shadow:0 2px 6px rgba(0,82,204,.08); }
+        .card h2 { font-size:17px; color:var(--primary); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--light); }
+        .row { display:flex; gap:15px; flex-wrap:wrap; }
+        .col { flex:1; min-width:200px; }
+        .group { margin-bottom:16px; }
+        label { display:block; margin-bottom:6px; font-weight:500; font-size:14px; }
+        input, select, textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:15px; background:#fff; }
+        input:focus, select:focus, textarea:focus { outline:none; border-color:var(--primary); box-shadow:0 0 0 3px rgba(0,82,204,.1); }
+        .hint { font-size:13px; color:#777; margin:-5px 0 10px; }
+        .btn { padding:12px 24px; border:none; border-radius:8px; font-size:16px; cursor:pointer; font-weight:500; margin-right:10px; margin-top:8px; }
+        .btn-primary { background:var(--primary); color:#fff; }
+        .btn-primary:hover { background:#0047b3; }
+        .btn-secondary { background:var(--light); color:var(--primary); }
+        .btn-secondary:hover { background:#d6e8ff; }
+        .record { border-left:4px solid var(--primary); padding:14px; margin:12px 0; background:var(--light); border-radius:0 8px 8px 0; }
+        .record.ok { border-left-color:var(--success); }
+        .record.warn { border-left-color:var(--warning); }
+        .record .meta { font-weight:bold; margin-bottom:6px; }
+        .status-ok { color:var(--success); font-weight:bold; }
+        .hidden { display:none !important; }
+        .photo-preview { max-width:150px; border-radius:6px; margin-top:8px; }
+        .filter-bar { display:flex; gap:10px; margin-bottom:15px; flex-wrap:wrap; }
+        .filter-bar select { max-width:180px; }
+        .empty { text-align:center; color:#888; padding:30px; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>🚌 载送车辆检查 & 洗车记录系统</h1>
+    <p class="subtitle">补习中心 · 载送部 SOP 管理平台</p>
+</header>
+
+<div class="tabs">
+    <button class="tab active" data-tab="form">📝 填写检查</button>
+    <button class="tab" data-tab="records">📋 全部记录</button>
+    <button class="tab" data-tab="wash">🧼 洗车台账</button>
+    <button class="tab" data-tab="admin">🔐 管理后台</button>
+</div>
+
+<!-- ========== 填报页面 ========== -->
+<div id="form" class="tab-content">
+    <div class="card">
+        <h2>车辆日常检查记录表</h2>
+        <form id="checkForm">
+            <div class="row">
+                <div class="col group">
+                    <label>司机姓名</label>
+                    <select id="driver" required>
+                        <option value="">— 请选择 —</option>
+                        <option>Uncle Alan（正式）</option>
+                        <option>Uncle A（正式）</option>
+                        <option>Uncle Brandon（正式）</option>
+                        <option>Uncle How（兼职）</option>
+                    </select>
+                </div>
+                <div class="col group">
+                    <label>车牌号码</label>
+                    <select id="plate" required>
+                        <option value="">— 请选择 —</option>
+                        <option>2722</option>
+                        <option>6722</option>
+                        <option>1722</option>
+                        <option>683</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col group">
+                    <label>检查日期</label>
+                    <input type="date" id="checkDate" required>
+                </div>
+                <div class="col group">
+                    <label>检查时段</label>
+                    <select id="period">
+                        <option value="出车前">🌅 出车前</option>
+                        <option value="收车后">🌙 收车后</option>
+                    </select>
+                </div>
+            </div>
+
+            <h3 style="margin:20px 0 10px; font-size:15px;">一、上车前检查</h3>
+            
+            <div class="group">
+                <label>🛞 车轮状况（胎压、胎纹、螺丝、有无扎钉）</label>
+                <select id="tire">
+                    <option value="正常">✅ 正常 — 胎压足、胎纹清晰、螺丝齐全</option>
+                    <option value="异常">⚠️ 异常 — 见备注</option>
+                </select>
+            </div>
+
+            <div class="group">
+                <label>💡 车灯（近光/远光/转向/刹车灯/倒车灯）</label>
+                <select id="light">
+                    <option value="全部正常">✅ 全部正常</option>
+                    <option value="部分异常">⚠️ 有不亮/故障 — 见备注</option>
+                </select>
+            </div>
+
+            <div class="row">
+                <div class="col group">
+                    <label>🛢️ 上次更换黑油日期</label>
+                    <input type="date" id="oilChangeDate">
+                </div>
+                <div class="col group">
+                    <label>当前里程 (km)</label>
+                    <input type="number" id="mileage" placeholder="如: 52300">
+                </div>
+            </div>
+            <p class="hint">📌 标准：每 <strong>5,000 km</strong> 或 <strong>3 个月</strong> 更换一次，以先到为准</p>
+
+            <div class="group">
+                <label>💧 冷却水 + 雨刮水</label>
+                <select id="water">
+                    <option value="液位正常">✅ 液位正常，无渗漏</option>
+                    <option value="偏低已补充">⚠️ 偏低 — 已补充至标准位置</option>
+                    <option value="异常">❌ 异常 — 需报修</option>
+                </select>
+            </div>
+
+            <h3 style="margin:20px 0 10px; font-size:15px;">二、上车后检查</h3>
+
+            <div class="group">
+                <label>❄️ 冷气制冷效果</label>
+                <select id="ac">
+                    <option value="冰凉正常">✅ 正常 — 开启3–5分钟明显冰凉</option>
+                    <option value="偏弱">⚠️ 制冷偏弱</option>
+                    <option value="不制冷">❌ 不制冷 — 报修</option>
+                </select>
+            </div>
+
+            <div class="group">
+                <label>⛽ 燃油余量</label>
+                <select id="fuel">
+                    <option value="充足">✅ 充足，可覆盖当日行程</option>
+                    <option value="偏低已补">⚠️ 低于1/4 — 已补满</option>
+                    <option value="不足">❌ 不足 — 请先加油再出车</option>
+                </select>
+            </div>
+
+            <div class="group">
+                <label>📋 其他（仪表、刹车、座椅、安全带、门窗）</label>
+                <select id="other">
+                    <option value="全部正常">✅ 全部正常</option>
+                    <option value="有异常">⚠️ 有异常 — 请备注</option>
+                </select>
+            </div>
+
+            <h3 style="margin:20px 0 10px; font-size:15px;">三、洗车记录</h3>
+            <div class="group">
+                <label>今日是否洗车</label>
+                <select id="doWash" onchange="toggleWash()">
+                    <option value="no">否</option>
+                    <option value="yes">是 — 填写洗车信息</option>
+                </select>
+            </div>
+
+            <div id="washFields" class="hidden">
+                <div class="row">
+                    <div class="col group">
+                        <label>洗车类型</label>
+                        <select id="washType">
+                            <option value="仅外观">仅外观</option>
+                            <option value="仅车内清洁">仅车内清洁</option>
+                            <option value="内外全洗">内外全洗 ✅ 推荐</option>
+                        </select>
+                    </div>
+                    <div class="col group">
+                        <label>洗车日期</label>
+                        <input type="date" id="washDate">
+                    </div>
+                </div>
+                <div class="group">
+                    <label>上传洗车照片</label>
+                    <input type="file" id="washPhoto" accept="image/*" onchange="previewPhoto(this)">
+                    <img id="photoPreviewImg" class="photo-preview hidden" alt="预览">
+                </div>
+            </div>
+
+            <div class="group" style="margin-top:20px;">
+                <label>📝 备注 / 异常情况说明</label>
+                <textarea id="remark" rows="3" placeholder="如有异常请写明位置、现象..."></textarea>
+            </div>
+
+            <button type="submit" class="btn btn-primary">✅ 提交检查记录</button>
+            <button type="reset" class="btn btn-secondary">重置表单</button>
+        </form>
+    </div>
+</div>
+
+<!-- ========== 全部记录 ========== -->
+<div id="records" class="tab-content hidden">
+    <div class="card">
+        <h2>📋 全部检查记录</h2>
+        <div class="filter-bar">
+            <select id="filterDriver" onchange="renderAllRecords()">
+                <option value="">— 全部司机 —</option>
+                <option>Uncle Alan（正式）</option>
+                <option>Uncle A（正式）</option>
+                <option>Uncle Brandon（正式）</option>
+                <option>Uncle How（兼职）</option>
+            </select>
+            <select id="filterPlate" onchange="renderAllRecords()">
+                <option value="">— 全部车牌 —</option>
+                <option>2722</option>
+                <option>6722</option>
+                <option>1722</option>
+                <option>683</option>
+            </select>
+            <button class="btn btn-secondary" style="padding:8px 12px; font-size:14px;" onclick="exportData()">📤 导出CSV</button>
+        </div>
+        <div id="recordsList"></div>
+    </div>
+</div>
+
+<!-- ========== 洗车台账 ========== -->
+<div id="wash" class="tab-content hidden">
+    <div class="card">
+        <h2>🧼 洗车记录台账</h2>
+        <p class="hint">建议：至少每周清洗一次；雨天/泥泞天后尽快清洗</p>
+        <div id="washList"></div>
+    </div>
+</div>
+
+<!-- ========== 管理后台 ========== -->
+<div id="admin" class="tab-content hidden">
+    <div class="card">
+        <h2>🔐 管理后台</h2>
+        <p class="hint">数据保存在浏览器；部署到GitHub Pages后所有人共用链接填报</p>
+        <button class="btn btn-secondary" onclick="exportData()">📤 导出全部记录</button>
+        <button class="btn btn-secondary" onclick="if(confirm('确定清空？不可恢复！')){localStorage.removeItem('carCheckRecords');location.reload();}" style="color:red; margin-left:10px;">🗑️ 清空记录</button>
+    </div>
+</div>
+
+<script>
+// 默认当天日期
+document.getElementById('checkDate').valueAsDate = new Date();
+
+// 标签页切换
+document.querySelectorAll('.tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+        document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        document.querySelectorAll('.tab-content').forEach(c => c.classList.add('hidden'));
+        document.getElementById(tab.dataset.tab).classList.remove('hidden');
+        if(tab.dataset.tab==='records') renderAllRecords();
+        if(tab.dataset.tab==='wash') renderWashRecords();
+    });
+});
+
+// 洗车字段显示/隐藏
+function toggleWash(){
+    const show = document.getElementById('doWash').value==='yes';
+    document.getElementById('washFields').classList.toggle('hidden', !show);
+    if(show && !document.getElementById('washDate').value) {
+        document.getElementById('washDate').valueAsDate = new Date();
+    }
+}
+
+// 照片预览
+function previewPhoto(input){
+    const img = document.getElementById('photoPreviewImg');
+    if(input.files && input.files[0]){
+        const reader = new FileReader();
+        reader.onload = e => { img.src = e.target.result; img.classList.remove('hidden'); };
+        reader.readAsDataURL(input.files[0]);
+    }
+}
+
+// 提交保存
+document.getElementById('checkForm').addEventListener('submit', e => {
+    e.preventDefault();
+    const record = {
+        id: Date.now(),
+        driver: document.getElementById('driver').value,
+        plate: document.getElementById('plate').value,
+        date: document.getElementById('checkDate').value,
+        period: document.getElementById('period').value,
+        tire: document.getElementById('tire').value,
+        light: document.getElementById('light').value,
+        oilChangeDate: document.getElementById('oilChangeDate').value || '未记录',
+        mileage: document.getElementById('mileage').value || '未填写',
+        water: document.getElementById('water').value,
+        ac: document.getElementById('ac').value,
+        fuel: document.getElementById('fuel').value,
+        other: document.getElementById('other').value,
+        isWash: document.getElementById('doWash').value,
+        washType: document.getElementById('washType').value || '-',
+        washDate: document.getElementById('washDate').value || '-',
+        photo: document.getElementById('photoPreviewImg').src || null,
+        remark: document.getElementById('remark').value || '无'
+    };
+
+    let records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]');
+    records.unshift(record);
+    localStorage.setItem('carCheckRecords', JSON.stringify(records));
+    
+    alert('✅ 提交成功！感谢完成检查');
+    e.target.reset();
+    document.getElementById('checkDate').valueAsDate = new Date();
+    document.getElementById('photoPreviewImg').classList.add('hidden');
+});
+
+// 渲染全部记录
+function renderAllRecords(){
+    let records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]');
+    const fd = document.getElementById('filterDriver').value;
+    const fp = document.getElementById('filterPlate').value;
+    if(fd) records = records.filter(r=>r.driver===fd);
+    if(fp) records = records.filter(r=>r.plate===fp);
+    
+    const container = document.getElementById('recordsList');
+    if(!records.length){ container.innerHTML='<p class="empty">暂无记录</p>'; return; }
+    
+    container.innerHTML = records.map(r => {
+        const isAbnormal = ['异常','部分异常','不制冷','不足','有异常'].some(k => 
+            r.tire.includes(k)||r.light.includes(k)||r.ac.includes(k)||r.fuel.includes(k)||r.other.includes(k)
+        );
+        return `
+        <div class="record ${r.isWash==='yes'?'ok':''} ${isAbnormal?'warn':''}">
+            <p class="meta">${r.date} · ${r.period} · ${r.driver}「车牌 ${r.plate}」</p>
+            <p>🛞车轮: ${r.tire} | 💡车灯: ${r.light}</p>
+            <p>🛢️换黑油: ${r.oilChangeDate} / ${r.mileage} km</p>
+            <p>💧水: ${r.water} | ❄️冷气: ${r.ac} | ⛽油量: ${r.fuel}</p>
+            <p>其他: ${r.other}</p>
+            ${r.isWash==='yes'?`<p class="status-ok" style="margin-top:4px;">🧼 已洗车: ${r.washType}（${r.washDate}）</p>`:''}
+            ${r.remark!=='无'?`<p style="color:#666; margin-top:6px;">📝备注: ${r.remark}</p>`:''}
+            ${r.photo?`<img src="${r.photo}" style="max-width:120px; border-radius:4px; margin-top:6px;">`:''}
+        </div>`;
+    }).join('');
+}
+
+// 渲染洗车台账
+function renderWashRecords(){
+    const records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]').filter(r=>r.isWash==='yes');
+    const container = document.getElementById('washList');
+    if(!records.length){ container.innerHTML='<p class="empty">暂无洗车记录</p>'; return; }
+    container.innerHTML = records.map(r => `
+    <div class="record ok">
+        <p class="meta">${r.washDate} · ${r.driver}「车牌 ${r.plate}」</p>
+        <p>类型: ${r.washType}</p>
+        ${r.photo?`<img src="${r.photo}" style="max-width:150px; border-radius:6px; margin-top:8px;">`:''}
+        <p style="color:#888; font-size:13px; margin-top:6px;">关联检查日期: ${r.date}</p>
+    </div>`).join('');
+}
+
+// 导出CSV
+function exportData(){
+    const records = JSON.parse(localStorage.getItem('carCheckRecords') || '[]');
+    if(!records.length){ alert('暂无记录'); return; }
+    const csv = [
+        ['日期','时段','司机','车牌','车轮','车灯','上次换黑油日期','里程','水','冷气','油量','其他','是否洗车','洗车类型','备注'],
+        ...records.map(r => [
+            r.date, r.period, r.driver, r.plate, r.tire, r.light, r.oilChangeDate, r.mileage, r.water, r.ac, r.fuel, r.other,
+            r.isWash==='yes'?'是':'否', r.washType, r.remark
+        ])
+    ].map(row => row.map(v=>`"${v}"`).join(',')).join('\n');
+    
+    const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `车辆检查记录_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+}
+</script>
+
+</body>
+</html>
