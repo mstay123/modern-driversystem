@@ -109,7 +109,7 @@
                     <select id="trDriver" required>
                         <option value="">— 请选择 —</option>
                         <option>Uncle Alan</option>
-                        <option>Uncle A</option>
+                        <option>Uncle Arnold</option>
                         <option>Uncle Brandon</option>
                         <option>Uncle How</option>
                     </select>
@@ -129,8 +129,18 @@
                 <label>学校 School / 回家 *</label>
                 <select id="trDirection" required>
                     <option value="">— 请选择 —</option>
-                    <option>去学校</option>
-                    <option>回家里</option>
+                    <option>CH 1</option>
+                    <option>CH 3</option>
+                    <option>CH 4</option>
+                    <option>CH 5</option>
+                    <option>Batu Lintang</option>
+                    <option>KH</option>
+                    <option>KT</option>
+                    <option>Sg Apong</option>
+                    <option>ST.Mary</option>
+                    <option>Padungan</option>
+                    <option>回家 Back to Home</option>
+                    <option>从家去中心 Home to Modern</option>
                 </select>
             </div>
             <div class="group">
@@ -170,7 +180,7 @@
                     <select id="driver" required>
                         <option value="">— 请选择 —</option>
                         <option>Uncle Alan</option>
-                        <option>Uncle A</option>
+                        <option>Uncle Arnold</option>
                         <option>Uncle Brandon</option>
                         <option>Uncle How</option>
                     </select>
@@ -258,11 +268,18 @@
             </div>
             <p class="hint">📌 标准：每 <strong>5,000 km</strong> 或 <strong>3 个月</strong> 更换一次，以先到为准</p>
             <div class="group">
-                <label>💧 冷却水 + 雨刮水</label>
+                <label> 电池水 </label>
+                <select id="water">
+                    <option value="液位正常">✅ 液位正常，无渗漏</option>
+                    <option value="偏低已补充">⚠️ 偏低 — 需要补充至标准位置</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>💧 冷却水（水箱水）</label>
                 <select id="water">
                     <option value="液位正常">✅ 液位正常，无渗漏</option>
                     <option value="偏低已补充">⚠️ 偏低 — 已补充至标准位置</option>
-                    <option value="异常">❌ 异常 — 需报修</option>
+                    <option value="异常">❌ 异常 — 频繁需要添水，需报修</option>
                 </select>
             </div>
 
@@ -272,7 +289,7 @@
                 <select id="ac">
                     <option value="冰凉正常">✅ 正常 — 开启3–5分钟明显冰凉</option>
                     <option value="偏弱">⚠️ 制冷偏弱</option>
-                    <option value="不制冷">❌ 不制冷 — 报修</option>
+                    <option value="不制冷">❌ 不制冷 — 需要修</option>
                 </select>
             </div>
             <div class="group">
@@ -310,7 +327,7 @@
                     <select id="washDriver" required>
                         <option value="">— 请选择 —</option>
                         <option>Uncle Alan</option>
-                        <option>Uncle A</option>
+                        <option>Uncle Arnold</option>
                         <option>Uncle Brandon</option>
                         <option>Uncle How</option>
                     </select>
@@ -336,7 +353,7 @@
                     <select id="washType">
                         <option value="仅外观">仅外观</option>
                         <option value="仅车内清洁">仅车内清洁</option>
-                        <option value="内外全洗">内外全洗 ✅ 推荐</option>
+                        <option value="内外全洗">内外全洗</option>
                     </select>
                 </div>
             </div>
@@ -373,7 +390,7 @@
             <select id="filterADriver" onchange="renderAllRecords()">
                 <option value="">— 全部司机 —</option>
                 <option>Uncle Alan</option>
-                <option>Uncle A</option>
+                <option>Uncle Arnold</option>
                 <option>Uncle Brandon</option>
                 <option>Uncle How</option>
             </select>
