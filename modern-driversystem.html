@@ -52,8 +52,8 @@
 
 <div class="tabs">
     <button class="tab active" data-tab="form">📝 填写检查</button>
-    <button class="tab" data-tab="records">📋 全部记录</button>
     <button class="tab" data-tab="wash">🧼 洗车台账</button>
+    <button class="tab" data-tab="records">📋 全部记录</button>
     <button class="tab" data-tab="admin">🔐 管理后台</button>
 </div>
 
@@ -67,7 +67,7 @@
                     <select id="driver" required>
                         <option value="">— 请选择 —</option>
                         <option>Uncle Alan</option>
-                        <option>Uncle A</option>
+                        <option>Uncle Arnold</option>
                         <option>Uncle Brandon</option>
                         <option>Uncle How</option>
                     </select>
@@ -92,8 +92,8 @@
                 <div class="col group">
                     <label>检查时段</label>
                     <select id="period">
-                        <option value="出车前">🌅 出车前</option>
-                        <option value="收车后">🌙 收车后</option>
+                        <option value="出车前"> 出车前</option>
+                        <option value="收车后"> 收车后</option>
                     </select>
                 </div>
             </div>
@@ -160,7 +160,15 @@
             <p class="hint">📌 标准：每 <strong>5,000 km</strong> 或 <strong>3 个月</strong> 更换一次，以先到为准</p>
 
             <div class="group">
-                <label>💧 冷却水 + 雨刮水</label>
+                <label> 电池水</label>
+                <select id="water">
+                    <option value="液位正常">✅ 液位正常，足够</option>
+                    <option value="偏低已补充">⚠️ 偏低 — 需要补充至标准位置</option>
+                </select>
+            </div>
+
+            <div class="group">
+                <label> 冷却液（水箱水）</label>
                 <select id="water">
                     <option value="液位正常">✅ 液位正常，无渗漏</option>
                     <option value="偏低已补充">⚠️ 偏低 — 已补充至标准位置</option>
