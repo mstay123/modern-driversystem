@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Modern载送管理系统 - 载送</title>
+    <title>载送管理系统 - 补习中心</title>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family:"Microsoft YaHei", "Noto Sans SC", sans-serif; }
         :root { --primary:#0052cc; --success:#009933; --danger:#e63300; --light:#f0f7ff; --border:#ccd6eb; }
@@ -14,7 +14,7 @@
         .tabs { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
         .tab { flex:1; min-width:100px; padding:10px 8px; border:none; border-radius:8px; background:#fff; color:#555; cursor:pointer; font-size:14px; }
         .tab.active { background:var(--primary); color:#fff; font-weight:bold; }
-        .tab.locked { opacity:0.6; }
+        .tab.hidden-tab { display:none !important; }
         .card { background:#fff; border-radius:12px; padding:22px; margin-bottom:18px; box-shadow:0 2px 6px rgba(0,82,204,.08); }
         .card h2 { font-size:17px; color:var(--primary); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--light); }
         .row { display:flex; gap:15px; flex-wrap:wrap; }
@@ -113,8 +113,8 @@
     <button class="tab" data-tab="check">🚗 车辆检查</button>
     <button class="tab" data-tab="wash">🧼 洗车打卡</button>
     <button class="tab" data-tab="myRecords">📋 我的记录</button>
-    <button class="tab" data-tab="allRecords" id="tabAllRecords">📊 全部数据</button>
-    <button class="tab" data-tab="adminPanel" id="tabAdminPanel">🔧 管理后台</button>
+    <button class="tab hidden-tab" data-tab="allRecords" id="tabAllRecords">📊 全部数据</button>
+    <button class="tab hidden-tab" data-tab="adminPanel" id="tabAdminPanel">🔧 管理后台</button>
 </div>
 
 <!-- 内容区 -->
@@ -189,7 +189,7 @@
             <div class="row">
                 <div class="col group">
                     <label>英文姓名 *</label>
-                    <input type="text" id="newStuName" placeholder="如：TAN WEI JIE" required>
+                    <input type="text" id="newStuName" placeholder="如：TAN WEI JIE">
                 </div>
                 <div class="col group">
                     <label>中文姓名</label>
@@ -260,8 +260,8 @@
                 <div class="col group">
                     <label>检查时段</label>
                     <select id="period">
-                        <option value="出车前">🌅 早上出车前</option>
-                        <option value="收车后">🌙 晚上收车后</option>
+                        <option value="出车前">🌅 出车前</option>
+                        <option value="收车后">🌙 收车后</option>
                     </select>
                 </div>
             </div>
@@ -270,7 +270,7 @@
                 <label>🛞 车轮状况</label>
                 <select id="tire">
                     <option value="正常">✅ 正常</option>
-                    <option value="异常">⚠️ 异常 — 请备注</option>
+                    <option value="异常">⚠️ 异常 — 见备注</option>
                 </select>
             </div>
             <div class="group">
@@ -340,9 +340,9 @@
             <div class="group">
                 <label>❄️ 冷气效果</label>
                 <select id="ac">
-                    <option value="正常">✅ 正常冰凉</option>
+                    <option value="正常">✅ 正常</option>
                     <option value="偏弱">⚠️ 制冷偏弱</option>
-                    <option value="不制冷">❌ 不制冷，需要修</option>
+                    <option value="不制冷">❌ 不制冷报修</option>
                 </select>
             </div>
             <div class="group">
@@ -502,11 +502,17 @@ function enterSystem(){
     document.getElementById('mainTabs').classList.remove('hidden');
     document.getElementById('contentArea').classList.remove('hidden');
 
+    // === 关键：司机隐藏管理员专属标签页 ===
     if(currentUser.role === 'driver'){
-        document.getElementById('tabAllRecords').classList.add('hidden');
-        document.getElementById('tabAdminPanel').classList.add('hidden');
+        document.getElementById('tabAllRecords').classList.add('hidden-tab');
+        document.getElementById('tabAdminPanel').classList.add('hidden-tab');
+    } else {
+        // 管理员：显示全部标签页
+        document.getElementById('tabAllRecords').classList.remove('hidden-tab');
+        document.getElementById('tabAdminPanel').classList.remove('hidden-tab');
     }
 
+    // 司机自动填名字
     if(currentUser.role === 'driver'){
         ['trDriver','driver','washDriver'].forEach(id=>{
             const el=document.getElementById(id); if(el) el.value=currentUser.name;
@@ -533,8 +539,10 @@ function logout(){
 document.querySelectorAll('.tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
         const name = tab.dataset.tab;
+        // 司机想点管理员页 → 阻止并提示
         if((name==='allRecords'||name==='adminPanel')&&(!currentUser||currentUser.role!=='admin')){
-            showAdminLogin(); return;
+            alert('🔐 此功能仅管理员可用');
+            return;
         }
         switchTab(name);
     });
@@ -585,14 +593,14 @@ function addStudent(){
 }
 
 function loadAllStudents(){
-    alert('📋 全部学生已显示！现在可以直接点名啦！\n（学生数据已全部加载到下方列表）');
+    alert('📋 学生名单已全部显示！');
     renderStudentList();
 }
 
 function renderStudentList(){
     const container = document.getElementById('studentList');
     if(!studentList.length){
-        container.innerHTML = '<p class="empty">暂无学生 — 请在上方添加或点「显示全部学生」</p>';
+        container.innerHTML = '<p class="empty">暂无学生 — 请在上方添加</p>';
         return;
     }
     container.innerHTML = studentList.map(s => {
