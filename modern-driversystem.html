@@ -198,7 +198,7 @@
                 </div>
                 <div class="col group">
                     <label>中文姓名</label>
-                    <input type="text" id="newStuCn" placeholder="如：王伟杰">
+                    <input type="text" id="newStuCn" placeholder="如：陈伟杰">
                 </div>
             </div>
             <div class="row">
@@ -302,8 +302,8 @@
                 <div class="col group">
                     <label>检查时段</label>
                     <select id="period">
-                        <option value="出车前">🌅 出车前</option>
-                        <option value="收车后">🌙 收车后</option>
+                        <option value="出车前">🌅 早上出车前</option>
+                        <option value="收车后">🌙 晚上收车后</option>
                     </select>
                 </div>
             </div>
@@ -312,7 +312,7 @@
                 <label>🛞 车轮状况</label>
                 <select id="tire">
                     <option value="正常">✅ 正常</option>
-                    <option value="异常">⚠️ 异常 — 见备注</option>
+                    <option value="异常">⚠️ 有异常 — 请备注</option>
                 </select>
             </div>
             <div class="group">
@@ -328,14 +328,6 @@
                     <option value="液位正常">✅ 液位正常，无渗漏</option>
                     <option value="偏低已补充">⚠️ 偏低 — 已补充至标准位置</option>
                     <option value="异常">❌ 异常 — 频繁需要添水，需报修</option>
-                </select>
-            </div>
-            <div class="group">
-                <label>💧 雨刮水</label>
-                <select id="wiperWater">
-                    <option value="正常">✅ 液位正常</option>
-                    <option value="偏低已补">⚠️ 偏低已补充</option>
-                    <option value="异常">❌ 异常报修</option>
                 </select>
             </div>
             <div class="group">
@@ -400,6 +392,7 @@
                 <select id="other">
                     <option value="正常">✅ 全部正常</option>
                     <option value="异常">⚠️ 有异常</option>
+                    <textarea id="remark" rows="3" placeholder="写明异常详情..."></textarea>
                 </select>
             </div>
             <div class="group">
