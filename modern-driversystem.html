@@ -19,6 +19,7 @@
         .card h2 { font-size:17px; color:var(--primary); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--light); }
         .row { display:flex; gap:15px; flex-wrap:wrap; }
         .col { flex:1; min-width:200px; }
+        .col-2 { flex:2; min-width:300px; }
         .group { margin-bottom:16px; }
         label { display:block; margin-bottom:6px; font-weight:500; font-size:14px; }
         input, select, textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:15px; background:#fff; }
@@ -32,12 +33,15 @@
         .hidden { display:none !important; }
         .empty { text-align:center; color:#888; padding:30px; }
         .hint { font-size:13px; color:#777; margin:8px 0; }
+        .filter-bar { background:#e6f0ff; padding:12px 16px; border-radius:8px; margin-bottom:18px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+        .filter-bar label { margin-bottom:0; white-space:nowrap; }
 
         .student-card { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; background:#fff; transition:all 0.2s; display:flex; justify-content:space-between; align-items:flex-start; }
         .student-card:hover { box-shadow:0 2px 8px rgba(0,82,204,.1); }
         .student-info { flex:1; }
         .student-name { font-weight:bold; font-size:15px; margin-bottom:4px; }
         .student-meta { font-size:13px; color:#777; margin-bottom:12px; }
+        .student-school { display:inline-block; background:var(--light); color:var(--primary); font-size:12px; padding:2px 8px; border-radius:12px; margin-bottom:8px; }
 
         .attend-buttons { display:flex; gap:8px; margin-bottom:4px; }
         .ab-btn {
@@ -184,30 +188,68 @@
     <div class="card">
         <h2>👥 学生点名</h2>
 
+        <!-- 添加新学生表单 -->
         <div class="add-student-form">
             <h3 style="font-size:15px; margin-bottom:12px;">➕ 添加新学生</h3>
             <div class="row">
                 <div class="col group">
                     <label>英文姓名 *</label>
-                    <input type="text" id="newStuName" placeholder="如：TAN WEI JIE">
+                    <input type="text" id="newStuName" placeholder="如：TAN WEI JIE" required>
                 </div>
                 <div class="col group">
                     <label>中文姓名</label>
-                    <input type="text" id="newStuCn" placeholder="如：陈伟杰">
+                    <input type="text" id="newStuCn" placeholder="如：王伟杰">
                 </div>
             </div>
             <div class="row">
                 <div class="col group">
+                    <label>所属学校 *</label>
+                    <select id="newStuSchool" required>
+                        <option value="">— 请选择学校 —</option>
+                        <option>CH 1</option>
+                        <option>CH 3</option>
+                        <option>CH 4</option>
+                        <option>CH 5</option>
+                        <option>Batu Lintang</option>
+                        <option>KH</option>
+                        <option>KT</option>
+                        <option>Sg Apong</option>
+                        <option>ST.Mary</option>
+                        <option>Padungan</option>
+                    </select>
+                </div>
+                <div class="col group">
                     <label>学号 / 编号</label>
                     <input type="text" id="newStuId" placeholder="可留空">
                 </div>
-                <div class="col group">
+            </div>
+            <div class="row">
+                <div class="col-2 group">
                     <label>住址 / 地点</label>
                     <input type="text" id="newStuLoc" placeholder="可留空">
                 </div>
             </div>
             <button class="btn btn-sm btn-primary" onclick="addStudent()">✅ 添加到名单</button>
             <button class="btn btn-sm btn-secondary" onclick="loadAllStudents()">📋 显示全部学生</button>
+        </div>
+
+        <!-- 筛选学校 -->
+        <div class="filter-bar">
+            <label>🏫 筛选学校：</label>
+            <select id="filterSchool" onchange="renderStudentList()">
+                <option value="all">— 显示全部学校 —</option>
+                <option>CH 1</option>
+                <option>CH 3</option>
+                <option>CH 4</option>
+                <option>CH 5</option>
+                <option>Batu Lintang</option>
+                <option>KH</option>
+                <option>KT</option>
+                <option>Sg Apong</option>
+                <option>ST.Mary</option>
+                <option>Padungan</option>
+            </select>
+            <span style="color:#666; font-size:13px;">👉 选好学校后，下面只显示该学校的学生</span>
         </div>
 
         <div class="group">
@@ -340,7 +382,7 @@
             <div class="group">
                 <label>❄️ 冷气效果</label>
                 <select id="ac">
-                    <option value="正常">✅ 正常</option>
+                    <option value="正常">✅ 正常冰凉</option>
                     <option value="偏弱">⚠️ 制冷偏弱</option>
                     <option value="不制冷">❌ 不制冷报修</option>
                 </select>
@@ -502,12 +544,11 @@ function enterSystem(){
     document.getElementById('mainTabs').classList.remove('hidden');
     document.getElementById('contentArea').classList.remove('hidden');
 
-    // === 关键：司机隐藏管理员专属标签页 ===
+    // 司机隐藏管理员专属标签页
     if(currentUser.role === 'driver'){
         document.getElementById('tabAllRecords').classList.add('hidden-tab');
         document.getElementById('tabAdminPanel').classList.add('hidden-tab');
     } else {
-        // 管理员：显示全部标签页
         document.getElementById('tabAllRecords').classList.remove('hidden-tab');
         document.getElementById('tabAdminPanel').classList.remove('hidden-tab');
     }
@@ -539,7 +580,6 @@ function logout(){
 document.querySelectorAll('.tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
         const name = tab.dataset.tab;
-        // 司机想点管理员页 → 阻止并提示
         if((name==='allRecords'||name==='adminPanel')&&(!currentUser||currentUser.role!=='admin')){
             alert('🔐 此功能仅管理员可用');
             return;
@@ -558,6 +598,7 @@ function switchTab(name){
 
 // ========== 学生名单管理 ==========
 function clearOldStudents(){
+    if(!confirm('确定清空全部学生名单？此操作不可恢复！')) return;
     studentList = [];
     localStorage.removeItem('studentList');
     renderStudentList();
@@ -574,40 +615,53 @@ function removeStudent(id){
 function addStudent(){
     const name = document.getElementById('newStuName').value.trim();
     const cname = document.getElementById('newStuCn').value.trim();
+    const school = document.getElementById('newStuSchool').value;
     const sid = document.getElementById('newStuId').value.trim() || `STU_${Date.now()}`;
     const loc = document.getElementById('newStuLoc').value.trim();
     
     if(!name){ alert('请填写英文姓名'); return; }
+    if(!school){ alert('请选择所属学校'); return; }
     if(studentList.some(s=>s.id === sid)){ alert('该学生已存在！'); return; }
     
-    studentList.push({id:sid, name, cname, location:loc||'未填写'});
+    studentList.push({id:sid, name, cname, school, location:loc||'未填写'});
     localStorage.setItem('studentList', JSON.stringify(studentList));
     
     document.getElementById('newStuName').value = '';
     document.getElementById('newStuCn').value = '';
+    document.getElementById('newStuSchool').value = '';
     document.getElementById('newStuId').value = '';
     document.getElementById('newStuLoc').value = '';
     
     renderStudentList();
-    alert(`✅ 添加成功：${name}`);
+    alert(`✅ 添加成功：${name}（${school}）`);
 }
 
 function loadAllStudents(){
-    alert('📋 学生名单已全部显示！');
+    document.getElementById('filterSchool').value = 'all';
     renderStudentList();
+    alert('📋 已显示全部学生！请用上方「筛选学校」快速找到您要的学生~');
 }
 
 function renderStudentList(){
+    const filter = document.getElementById('filterSchool').value;
     const container = document.getElementById('studentList');
-    if(!studentList.length){
-        container.innerHTML = '<p class="empty">暂无学生 — 请在上方添加</p>';
+    
+    // 根据筛选条件过滤
+    const showList = filter === 'all' 
+        ? studentList 
+        : studentList.filter(s => s.school === filter);
+    
+    if(!showList.length){
+        container.innerHTML = '<p class="empty">暂无学生 — 请先添加或选择其他学校</p>';
         return;
     }
-    container.innerHTML = studentList.map(s => {
+    
+    container.innerHTML = showList.map(s => {
         const st = attendanceState[s.id] || {status:'none'};
         return `
         <div class="student-card">
             <div class="student-info">
+                <div class="student-school">🏫 ${s.school}</div>
                 <div class="student-name">${s.name}</div>
                 <div class="student-meta">${s.cname||'—'} · ${s.id} · ${s.location||'未填写'}</div>
                 <div class="attend-buttons">
@@ -640,6 +694,7 @@ function saveAttendance(){
         time: new Date().toLocaleString('zh-CN'),
         date: document.getElementById('attendDate').value,
         driver: currentUser.name,
+        filterSchool: document.getElementById('filterSchool').value,
         data: JSON.parse(JSON.stringify(attendanceState))
     };
     saveRecord('attendanceRecords', record);
@@ -759,7 +814,7 @@ function renderCard(r, showDriver=false){
             break;
         case 'attendance': 
             title='👥 学生点名'; 
-            content=`${r.date} · ${Object.keys(r.data).length}名学生已点名`; 
+            content=`${r.date} · ${r.filterSchool==='all'?'全部学校':r.filterSchool}<br>${Object.keys(r.data).length}名学生已点名`; 
             break;
     }
     return `<div class="record"><p style="font-weight:bold; margin-bottom:6px;">${title} — ${r.time}${showDriver?` · ${r.driver}`:''}</p>${content}</div>`;
