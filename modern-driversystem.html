@@ -35,14 +35,12 @@
         .hint { font-size:13px; color:#777; margin:8px 0; }
         .filter-bar { background:#e6f0ff; padding:12px 16px; border-radius:8px; margin-bottom:18px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
         .filter-bar label { margin-bottom:0; white-space:nowrap; }
-
         .student-card { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; background:#fff; transition:all 0.2s; display:flex; justify-content:space-between; align-items:flex-start; }
         .student-card:hover { box-shadow:0 2px 8px rgba(0,82,204,.1); }
         .student-info { flex:1; }
         .student-name { font-weight:bold; font-size:15px; margin-bottom:4px; }
         .student-meta { font-size:13px; color:#777; margin-bottom:12px; }
         .student-school { display:inline-block; background:var(--light); color:var(--primary); font-size:12px; padding:2px 8px; border-radius:12px; margin-bottom:8px; }
-
         .attend-buttons { display:flex; gap:8px; margin-bottom:4px; }
         .ab-btn {
             flex:1; padding:10px; border:2px solid #ddd; border-radius:8px; cursor:pointer;
@@ -52,7 +50,6 @@
         .ab-btn.none.selected { background:#e0e0e0; border-color:#999; color:#444; }
         .ab-btn.present.selected { background:#d6f5e3; border-color:var(--success); color:#006622; }
         .ab-btn.absent.selected { background:#ffebe6; border-color:var(--danger); color:#cc2900; }
-
         .auth-banner { background:#e6f0ff; padding:10px 15px; border-radius:8px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; }
         .auth-banner .user { font-weight:bold; color:var(--primary); }
         .password-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
@@ -61,12 +58,10 @@
     </style>
 </head>
 <body>
-
 <header>
     <h1>🚌 载送管理系统</h1>
     <p class="subtitle">补习中心 · 载送部 SOP 管理平台</p>
 </header>
-
 <!-- 登录区 -->
 <div class="card" id="loginArea">
     <h2>👤 请选择您的身份进入</h2>
@@ -88,13 +83,11 @@
     </div>
     <button class="btn btn-primary" id="enterBtn" onclick="loginAsDriver()" disabled>进入系统</button>
 </div>
-
 <!-- 已登录提示 -->
 <div class="auth-banner hidden" id="authBanner">
     <span>当前用户：<span class="user" id="currentUserName"></span></span>
     <button class="btn btn-secondary" style="padding:6px 12px; font-size:14px;" onclick="logout()">退出</button>
 </div>
-
 <!-- 管理员密码弹窗 -->
 <div id="adminLoginModal" class="hidden">
     <div class="password-modal">
@@ -109,7 +102,6 @@
         </div>
     </div>
 </div>
-
 <!-- 主标签页 -->
 <div class="tabs hidden" id="mainTabs">
     <button class="tab active" data-tab="transport">📊 载送统计</button>
@@ -120,10 +112,8 @@
     <button class="tab hidden-tab" data-tab="allRecords" id="tabAllRecords">📊 全部数据</button>
     <button class="tab hidden-tab" data-tab="adminPanel" id="tabAdminPanel">🔧 管理后台</button>
 </div>
-
 <!-- 内容区 -->
 <div id="contentArea" class="hidden">
-
 <!-- 1. 载送统计 -->
 <div id="transport" class="tab-content">
     <div class="card">
@@ -182,12 +172,10 @@
         </form>
     </div>
 </div>
-
 <!-- 2. 学生点名 -->
 <div id="students" class="tab-content hidden">
     <div class="card">
         <h2>👥 学生点名</h2>
-
         <!-- 添加新学生表单 -->
         <div class="add-student-form">
             <h3 style="font-size:15px; margin-bottom:12px;">➕ 添加新学生</h3>
@@ -232,7 +220,6 @@
             <button class="btn btn-sm btn-primary" onclick="addStudent()">✅ 添加到名单</button>
             <button class="btn btn-sm btn-secondary" onclick="loadAllStudents()">📋 显示全部学生</button>
         </div>
-
         <!-- 筛选学校 -->
         <div class="filter-bar">
             <label>🏫 筛选学校：</label>
@@ -251,14 +238,11 @@
             </select>
             <span style="color:#666; font-size:13px;">👉 选好学校后，下面只显示该学校的学生</span>
         </div>
-
         <div class="group">
             <label>选择点名日期</label>
             <input type="date" id="attendDate">
         </div>
-
         <div id="studentList"></div>
-
         <div style="margin-top:15px;">
             <button class="btn btn-primary" onclick="saveAttendance()">✅ 保存今日点名</button>
             <button class="btn btn-sm btn-secondary" onclick="resetAllStatus()">🔄 清空全部状态</button>
@@ -266,7 +250,6 @@
         </div>
     </div>
 </div>
-
 <!-- 3. 车辆检查 -->
 <div id="check" class="tab-content hidden">
     <div class="card">
@@ -392,7 +375,7 @@
                 <select id="other">
                     <option value="正常">✅ 全部正常</option>
                     <option value="异常">⚠️ 有异常</option>
-                    <textarea id="remark" rows="3" placeholder="写明异常详情..."></textarea>
+                </select>
             </div>
             <div class="group">
                 <label>📝 备注</label>
@@ -402,7 +385,6 @@
         </form>
     </div>
 </div>
-
 <!-- 4. 洗车打卡 -->
 <div id="wash" class="tab-content hidden">
     <div class="card">
@@ -457,7 +439,6 @@
         </form>
     </div>
 </div>
-
 <!-- 5. 我的记录 -->
 <div id="myRecords" class="tab-content hidden">
     <div class="card">
@@ -466,7 +447,6 @@
         <div id="myRecordsList"></div>
     </div>
 </div>
-
 <!-- 6. 全部数据 -->
 <div id="allRecords" class="tab-content hidden">
     <div class="card">
@@ -476,7 +456,6 @@
         <div id="allRecordsList"></div>
     </div>
 </div>
-
 <!-- 7. 管理后台 -->
 <div id="adminPanel" class="tab-content hidden">
     <div class="card">
@@ -486,12 +465,9 @@
         <button class="btn btn-sm btn-danger" onclick="if(confirm('确定清空所有数据？不可恢复！')){localStorage.clear();location.reload();}">🗑️ 清空所有数据</button>
     </div>
 </div>
-
 </div>
-
 <script>
 const ADMIN_PASSWORD = 'modernedu';
-
 // 学生名单
 let studentList = [];
 const savedStudents = localStorage.getItem('studentList');
@@ -499,10 +475,8 @@ if(savedStudents) {
     try { studentList = JSON.parse(savedStudents); }
     catch { studentList = []; }
 }
-
 let currentUser = null;
 let attendanceState = {};
-
 // ========== 登录 ==========
 document.getElementById('driverSelect').addEventListener('change', function(){
     document.getElementById('enterBtn').disabled = !this.value;
@@ -535,7 +509,6 @@ function enterSystem(){
     document.getElementById('currentUserName').textContent = currentUser.name;
     document.getElementById('mainTabs').classList.remove('hidden');
     document.getElementById('contentArea').classList.remove('hidden');
-
     // 司机隐藏管理员专属标签页
     if(currentUser.role === 'driver'){
         document.getElementById('tabAllRecords').classList.add('hidden-tab');
@@ -544,14 +517,12 @@ function enterSystem(){
         document.getElementById('tabAllRecords').classList.remove('hidden-tab');
         document.getElementById('tabAdminPanel').classList.remove('hidden-tab');
     }
-
     // 司机自动填名字
     if(currentUser.role === 'driver'){
         ['trDriver','driver','washDriver'].forEach(id=>{
             const el=document.getElementById(id); if(el) el.value=currentUser.name;
         });
     }
-
     document.getElementById('attendDate').valueAsDate = new Date();
     document.getElementById('checkDate').valueAsDate = new Date();
     document.getElementById('washDate').valueAsDate = new Date();
@@ -567,7 +538,6 @@ function logout(){
     document.getElementById('driverSelect').value = '';
     document.getElementById('enterBtn').disabled = true;
 }
-
 // ========== 标签页切换 ==========
 document.querySelectorAll('.tab').forEach(tab=>{
     tab.addEventListener('click', ()=>{
@@ -587,7 +557,6 @@ function switchTab(name){
     if(name==='myRecords') renderMyRecords();
     if(name==='allRecords') renderAllRecords();
 }
-
 // ========== 学生名单管理 ==========
 function clearOldStudents(){
     if(!confirm('确定清空全部学生名单？此操作不可恢复！')) return;
@@ -596,14 +565,12 @@ function clearOldStudents(){
     renderStudentList();
     alert('✅ 已清空全部学生名单！');
 }
-
 function removeStudent(id){
     if(!confirm('确定移除该学生？')) return;
     studentList = studentList.filter(s => s.id !== id);
     localStorage.setItem('studentList', JSON.stringify(studentList));
     renderStudentList();
 }
-
 function addStudent(){
     const name = document.getElementById('newStuName').value.trim();
     const cname = document.getElementById('newStuCn').value.trim();
@@ -627,13 +594,11 @@ function addStudent(){
     renderStudentList();
     alert(`✅ 添加成功：${name}（${school}）`);
 }
-
 function loadAllStudents(){
     document.getElementById('filterSchool').value = 'all';
     renderStudentList();
     alert('📋 已显示全部学生！请用上方「筛选学校」快速找到您要的学生~');
 }
-
 function renderStudentList(){
     const filter = document.getElementById('filterSchool').value;
     const container = document.getElementById('studentList');
@@ -666,19 +631,16 @@ function renderStudentList(){
         </div>`;
     }).join('');
 }
-
 function setAttend(sid, status){
     if(!attendanceState[sid]) attendanceState[sid] = {status:'none'};
     attendanceState[sid].status = status;
     renderStudentList();
 }
-
 function resetAllStatus(){
     if(!confirm('确定清空所有状态？')) return;
     attendanceState = {};
     renderStudentList();
 }
-
 function saveAttendance(){
     const record = {
         id: Date.now(),
@@ -692,7 +654,6 @@ function saveAttendance(){
     saveRecord('attendanceRecords', record);
     alert('✅ 点名保存成功！');
 }
-
 // ========== 载送统计提交 ==========
 document.getElementById('transportForm').addEventListener('submit', e=>{
     e.preventDefault();
@@ -707,7 +668,6 @@ document.getElementById('transportForm').addEventListener('submit', e=>{
     alert('✅ 提交成功！'); e.target.reset();
     if(currentUser?.role==='driver') document.getElementById('trDriver').value=currentUser.name;
 });
-
 // ========== 车辆检查提交 ==========
 document.getElementById('checkForm').addEventListener('submit', e=>{
     e.preventDefault();
@@ -737,7 +697,6 @@ document.getElementById('checkForm').addEventListener('submit', e=>{
     document.getElementById('checkDate').valueAsDate = new Date();
     if(currentUser?.role==='driver') document.getElementById('driver').value=currentUser.name;
 });
-
 // ========== 洗车打卡提交 ==========
 function previewPhoto(input){
     const img=document.getElementById('photoPreview');
@@ -762,7 +721,6 @@ document.getElementById('washForm').addEventListener('submit', e=>{
     document.getElementById('photoPreview').style.display='none';
     if(currentUser?.role==='driver') document.getElementById('washDriver').value=currentUser.name;
 });
-
 // ========== 数据存储与读取 ==========
 function saveRecord(key, record){
     let arr = JSON.parse(localStorage.getItem(key)||'[]');
