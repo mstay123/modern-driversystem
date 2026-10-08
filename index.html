@@ -1,0 +1,787 @@
+<modern-driversystem.html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>载送管理系统 - 补习中心</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family:"Microsoft YaHei", "Noto Sans SC", sans-serif; }
+        :root { --primary:#0052cc; --success:#009933; --danger:#e63300; --light:#f0f7ff; --border:#ccd6eb; }
+        body { background:#f0f7ff; padding:15px; max-width:1000px; margin:0 auto; color:#333; }
+        header { text-align:center; padding:20px; background:#fff; border-radius:12px; margin-bottom:20px; box-shadow:0 2px 8px rgba(0,82,204,.1); }
+        h1 { color:var(--primary); font-size:22px; margin-bottom:5px; }
+        .subtitle { color:#666; font-size:14px; }
+        .tabs { display:flex; gap:6px; margin-bottom:20px; flex-wrap:wrap; }
+        .tab { flex:1; min-width:100px; padding:10px 8px; border:none; border-radius:8px; background:#fff; color:#555; cursor:pointer; font-size:14px; }
+        .tab.active { background:var(--primary); color:#fff; font-weight:bold; }
+        .tab.hidden-tab { display:none !important; }
+        .card { background:#fff; border-radius:12px; padding:22px; margin-bottom:18px; box-shadow:0 2px 6px rgba(0,82,204,.08); }
+        .card h2 { font-size:17px; color:var(--primary); margin-bottom:18px; padding-bottom:10px; border-bottom:1px solid var(--light); }
+        .row { display:flex; gap:15px; flex-wrap:wrap; }
+        .col { flex:1; min-width:200px; }
+        .col-2 { flex:2; min-width:300px; }
+        .group { margin-bottom:16px; }
+        label { display:block; margin-bottom:6px; font-weight:500; font-size:14px; }
+        input, select, textarea { width:100%; padding:10px 12px; border:1px solid var(--border); border-radius:6px; font-size:15px; background:#fff; }
+        .btn { padding:12px 24px; border:none; border-radius:8px; font-size:16px; cursor:pointer; font-weight:500; margin-right:10px; margin-top:8px; }
+        .btn-primary { background:var(--primary); color:#fff; }
+        .btn-secondary { background:var(--light); color:var(--primary); }
+        .btn-sm { padding:6px 12px; font-size:14px; margin:0 4px; }
+        .btn-danger { background:#ffebe6; color:var(--danger); }
+        .btn-icon { background:none; border:none; color:var(--danger); cursor:pointer; font-size:18px; padding:2px 6px; margin-left:8px; }
+        .record { border-left:4px solid var(--primary); padding:14px; margin:12px 0; background:var(--light); border-radius:0 8px 8px 0; }
+        .hidden { display:none !important; }
+        .empty { text-align:center; color:#888; padding:30px; }
+        .hint { font-size:13px; color:#777; margin:8px 0; }
+        .filter-bar { background:#e6f0ff; padding:12px 16px; border-radius:8px; margin-bottom:18px; display:flex; gap:12px; flex-wrap:wrap; align-items:center; }
+        .filter-bar label { margin-bottom:0; white-space:nowrap; }
+        .student-card { border:1px solid var(--border); border-radius:10px; padding:16px; margin-bottom:12px; background:#fff; transition:all 0.2s; display:flex; justify-content:space-between; align-items:flex-start; }
+        .student-card:hover { box-shadow:0 2px 8px rgba(0,82,204,.1); }
+        .student-info { flex:1; }
+        .student-name { font-weight:bold; font-size:15px; margin-bottom:4px; }
+        .student-meta { font-size:13px; color:#777; margin-bottom:12px; }
+        .student-school { display:inline-block; background:var(--light); color:var(--primary); font-size:12px; padding:2px 8px; border-radius:12px; margin-bottom:8px; }
+        .attend-buttons { display:flex; gap:8px; margin-bottom:4px; }
+        .ab-btn {
+            flex:1; padding:10px; border:2px solid #ddd; border-radius:8px; cursor:pointer;
+            font-weight:bold; font-size:15px; background:#f5f5f5; color:#666;
+            transition:all 0.2s;
+        }
+        .ab-btn.none.selected { background:#e0e0e0; border-color:#999; color:#444; }
+        .ab-btn.present.selected { background:#d6f5e3; border-color:var(--success); color:#006622; }
+        .ab-btn.absent.selected { background:#ffebe6; border-color:var(--danger); color:#cc2900; }
+        .auth-banner { background:#e6f0ff; padding:10px 15px; border-radius:8px; margin-bottom:15px; display:flex; justify-content:space-between; align-items:center; }
+        .auth-banner .user { font-weight:bold; color:var(--primary); }
+        .password-modal { position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); display:flex; align-items:center; justify-content:center; z-index:1000; }
+        .password-box { background:#fff; padding:30px; border-radius:12px; max-width:360px; width:90%; }
+        .add-student-form { background:#f9f9f9; padding:15px; border-radius:8px; margin-bottom:20px; }
+    </style>
+</head>
+<body>
+<header>
+    <h1>🚌 载送管理系统</h1>
+    <p class="subtitle">补习中心 · 载送部 SOP 管理平台</p>
+</header>
+<!-- 登录区 -->
+<div class="card" id="loginArea">
+    <h2>👤 请选择您的身份进入</h2>
+    <div class="row">
+        <div class="col group">
+            <label>我是司机 — 选择姓名</label>
+            <select id="driverSelect">
+                <option value="">— 请选择 —</option>
+                <option>Uncle Alan</option>
+                <option>Uncle Arnold</option>
+                <option>Uncle Brandon</option>
+                <option>Uncle How</option>
+            </select>
+        </div>
+        <div class="col group">
+            <label>我是管理员</label>
+            <button class="btn btn-secondary" onclick="showAdminLogin()">🔐 管理员登录</button>
+        </div>
+    </div>
+    <button class="btn btn-primary" id="enterBtn" onclick="loginAsDriver()" disabled>进入系统</button>
+</div>
+<!-- 已登录提示 -->
+<div class="auth-banner hidden" id="authBanner">
+    <span>当前用户：<span class="user" id="currentUserName"></span></span>
+    <button class="btn btn-secondary" style="padding:6px 12px; font-size:14px;" onclick="logout()">退出</button>
+</div>
+<!-- 管理员密码弹窗 -->
+<div id="adminLoginModal" class="hidden">
+    <div class="password-modal">
+        <div class="password-box">
+            <h3>🔐 管理员登录</h3>
+            <div class="group">
+                <label>输入管理员密码</label>
+                <input type="password" id="adminPwdInput" placeholder="输入密码...">
+            </div>
+            <button class="btn btn-primary" onclick="verifyAdmin()">登录</button>
+            <button class="btn btn-secondary" onclick="closeAdminModal()">取消</button>
+        </div>
+    </div>
+</div>
+<!-- 主标签页 -->
+<div class="tabs hidden" id="mainTabs">
+    <button class="tab active" data-tab="transport">📊 载送统计</button>
+    <button class="tab" data-tab="students">👥 学生点名</button>
+    <button class="tab" data-tab="check">🚗 车辆检查</button>
+    <button class="tab" data-tab="wash">🧼 洗车打卡</button>
+    <button class="tab" data-tab="myRecords">📋 我的记录</button>
+    <button class="tab hidden-tab" data-tab="allRecords" id="tabAllRecords">📊 全部数据</button>
+    <button class="tab hidden-tab" data-tab="adminPanel" id="tabAdminPanel">🔧 管理后台</button>
+</div>
+<!-- 内容区 -->
+<div id="contentArea" class="hidden">
+<!-- 1. 载送统计 -->
+<div id="transport" class="tab-content">
+    <div class="card">
+        <h2>载送每日统计 Transportation</h2>
+        <p class="hint">时间和日期会自动记录，请在学生上车后，先填写再开车！<br>感恩感谢Uncle们，帮助我们完成载送统计。</p>
+        <form id="transportForm">
+            <div class="row">
+                <div class="col group">
+                    <label>Uncle *</label>
+                    <select id="trDriver" required>
+                        <option value="">— 请选择 —</option>
+                        <option>Uncle Alan</option>
+                        <option>Uncle Arnold</option>
+                        <option>Uncle Brandon</option>
+                        <option>Uncle How</option>
+                    </select>
+                </div>
+                <div class="col group">
+                    <label>车牌号码</label>
+                    <select id="trPlate">
+                        <option value="">— 请选择 —</option>
+                        <option>2722</option>
+                        <option>6722</option>
+                        <option>1722</option>
+                        <option>683</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>学校 School / 回家 *</label>
+                <select id="trDirection" required>
+                    <option value="">— 请选择 —</option>
+                    <option>CH 1</option>
+                    <option>CH 3</option>
+                    <option>CH 4</option>
+                    <option>CH 5</option>
+                    <option>Batu Lintang</option>
+                    <option>KH</option>
+                    <option>KT</option>
+                    <option>Sg Apong</option>
+                    <option>ST.Mary</option>
+                    <option>Padungan</option>
+                    <option>回家 Back to Home</option>
+                    <option>从家去中心 Home to Modern</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>Count / 载送人数 *</label>
+                <input type="number" id="trCount" min="1" placeholder="输入人数" required>
+            </div>
+            <div class="group">
+                <label>备注</label>
+                <textarea id="trRemark" rows="2" placeholder="如有特殊情况请填写..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">✅ 提交统计</button>
+        </form>
+    </div>
+</div>
+<!-- 2. 学生点名 -->
+<div id="students" class="tab-content hidden">
+    <div class="card">
+        <h2>👥 学生点名</h2>
+        <!-- 添加新学生表单 -->
+        <div class="add-student-form">
+            <h3 style="font-size:15px; margin-bottom:12px;">➕ 添加新学生</h3>
+            <div class="row">
+                <div class="col group">
+                    <label>英文姓名 *</label>
+                    <input type="text" id="newStuName" placeholder="如：TAN WEI JIE" required>
+                </div>
+                <div class="col group">
+                    <label>中文姓名</label>
+                    <input type="text" id="newStuCn" placeholder="如：陈伟杰">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col group">
+                    <label>所属学校 *</label>
+                    <select id="newStuSchool" required>
+                        <option value="">— 请选择学校 —</option>
+                        <option>CH 1</option>
+                        <option>CH 3</option>
+                        <option>CH 4</option>
+                        <option>CH 5</option>
+                        <option>Batu Lintang</option>
+                        <option>KH</option>
+                        <option>KT</option>
+                        <option>Sg Apong</option>
+                        <option>ST.Mary</option>
+                        <option>Padungan</option>
+                    </select>
+                </div>
+                <div class="col group">
+                    <label>学号 / 编号</label>
+                    <input type="text" id="newStuId" placeholder="可留空">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-2 group">
+                    <label>住址 / 地点</label>
+                    <input type="text" id="newStuLoc" placeholder="可留空">
+                </div>
+            </div>
+            <button class="btn btn-sm btn-primary" onclick="addStudent()">✅ 添加到名单</button>
+            <button class="btn btn-sm btn-secondary" onclick="loadAllStudents()">📋 显示全部学生</button>
+        </div>
+        <!-- 筛选学校 -->
+        <div class="filter-bar">
+            <label>🏫 筛选学校：</label>
+            <select id="filterSchool" onchange="renderStudentList()">
+                <option value="all">— 显示全部学校 —</option>
+                <option>CH 1</option>
+                <option>CH 3</option>
+                <option>CH 4</option>
+                <option>CH 5</option>
+                <option>Batu Lintang</option>
+                <option>KH</option>
+                <option>KT</option>
+                <option>Sg Apong</option>
+                <option>ST.Mary</option>
+                <option>Padungan</option>
+            </select>
+            <span style="color:#666; font-size:13px;">👉 选好学校后，下面只显示该学校的学生</span>
+        </div>
+        <div class="group">
+            <label>选择点名日期</label>
+            <input type="date" id="attendDate">
+        </div>
+        <div id="studentList"></div>
+        <div style="margin-top:15px;">
+            <button class="btn btn-primary" onclick="saveAttendance()">✅ 保存今日点名</button>
+            <button class="btn btn-sm btn-secondary" onclick="resetAllStatus()">🔄 清空全部状态</button>
+            <button class="btn btn-sm btn-danger" onclick="if(confirm('确定清空全部学生名单？此操作不可恢复！')){clearOldStudents()}">🗑️ 清空全部名单</button>
+        </div>
+    </div>
+</div>
+<!-- 3. 车辆检查 -->
+<div id="check" class="tab-content hidden">
+    <div class="card">
+        <h2>🚗 车辆日常检查</h2>
+        <form id="checkForm">
+            <div class="row">
+                <div class="col group">
+                    <label>司机姓名</label>
+                    <select id="driver" required>
+                        <option value="">— 请选择 —</option>
+                        <option>Uncle Alan</option>
+                        <option>Uncle Arnold</option>
+                        <option>Uncle Brandon</option>
+                        <option>Uncle How</option>
+                    </select>
+                </div>
+                <div class="col group">
+                    <label>车牌号码</label>
+                    <select id="plate" required>
+                        <option value="">— 请选择 —</option>
+                        <option>2722</option>
+                        <option>6722</option>
+                        <option>1722</option>
+                        <option>683</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col group">
+                    <label>检查日期</label>
+                    <input type="date" id="checkDate" required>
+                </div>
+                <div class="col group">
+                    <label>检查时段</label>
+                    <select id="period">
+                        <option value="出车前">🌅 早上出车前</option>
+                        <option value="收车后">🌙 晚上收车后</option>
+                    </select>
+                </div>
+            </div>
+            <h3 style="margin:20px 0 10px; font-size:15px;">上车前检查</h3>
+            <div class="group">
+                <label>🛞 车轮状况</label>
+                <select id="tire">
+                    <option value="正常">✅ 正常</option>
+                    <option value="异常">⚠️ 有异常 — 请备注</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>🔋 电池水</label>
+                <select id="batteryWater">
+                    <option value="液位正常">✅ 液位正常，无渗漏</option>
+                    <option value="偏低已补充">⚠️ 偏低 — 需要补充至标准位置</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>💧 冷却水（水箱水）</label>
+                <select id="coolingWater">
+                    <option value="液位正常">✅ 液位正常，无渗漏</option>
+                    <option value="偏低已补充">⚠️ 偏低 — 已补充至标准位置</option>
+                    <option value="异常">❌ 异常 — 频繁需要添水，需报修</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>💡 车灯检查</label>
+                <div style="display:flex; gap:12px; flex-wrap:wrap;">
+                    <div><label style="display:inline; width:80px;">远光：</label>
+                    <select id="lightHigh" style="width:120px; display:inline-block;">
+                        <option value="亮">✅ 亮</option>
+                        <option value="不亮">❌ 不亮</option>
+                    </select></div>
+                    <div><label style="display:inline; width:80px;">近光：</label>
+                    <select id="lightLow" style="width:120px; display:inline-block;">
+                        <option value="亮">✅ 亮</option>
+                        <option value="不亮">❌ 不亮</option>
+                    </select></div>
+                    <div><label style="display:inline; width:80px;">刹车灯：</label>
+                    <select id="lightBrake" style="width:120px; display:inline-block;">
+                        <option value="亮">✅ 亮</option>
+                        <option value="不亮">❌ 不亮</option>
+                    </select></div>
+                    <div><label style="display:inline; width:80px;">转向灯：</label>
+                    <select id="lightSignal" style="width:120px; display:inline-block;">
+                        <option value="正常">✅ 正常</option>
+                        <option value="异常">❌ 异常</option>
+                    </select></div>
+                    <div><label style="display:inline; width:80px;">倒车灯：</label>
+                    <select id="lightReverse" style="width:120px; display:inline-block;">
+                        <option value="正常">✅ 正常</option>
+                        <option value="异常">❌ 异常</option>
+                    </select></div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col group">
+                    <label>🛢️ 上次换黑油日期</label>
+                    <input type="date" id="oilChangeDate">
+                </div>
+                <div class="col group">
+                    <label>当前里程 (km)</label>
+                    <input type="number" id="mileage" placeholder="如: 52300">
+                </div>
+            </div>
+            <h3 style="margin:20px 0 10px; font-size:15px;">上车后检查</h3>
+            <div class="group">
+                <label>❄️ 冷气效果</label>
+                <select id="ac">
+                    <option value="正常">✅ 正常冰凉</option>
+                    <option value="偏弱">⚠️ 制冷偏弱</option>
+                    <option value="不制冷">❌ 不制冷报修</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>⛽ 燃油余量</label>
+                <select id="fuel">
+                    <option value="充足">✅ 充足</option>
+                    <option value="偏低">⚠️ 偏低</option>
+                    <option value="不足">❌ 不足请先加油</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>📋 其他状况</label>
+                <select id="other">
+                    <option value="正常">✅ 全部正常</option>
+                    <option value="异常">⚠️ 有异常</option>
+                </select>
+            </div>
+            <div class="group">
+                <label>📝 备注</label>
+                <textarea id="remark" rows="3" placeholder="写明异常详情..."></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">✅ 提交检查</button>
+        </form>
+    </div>
+</div>
+<!-- 4. 洗车打卡 -->
+<div id="wash" class="tab-content hidden">
+    <div class="card">
+        <h2>🧼 洗车打卡</h2>
+        <form id="washForm">
+            <div class="row">
+                <div class="col group">
+                    <label>司机姓名</label>
+                    <select id="washDriver" required>
+                        <option value="">— 请选择 —</option>
+                        <option>Uncle Alan</option>
+                        <option>Uncle Arnold</option>
+                        <option>Uncle Brandon</option>
+                        <option>Uncle How</option>
+                    </select>
+                </div>
+                <div class="col group">
+                    <label>车牌号码</label>
+                    <select id="washPlate" required>
+                        <option value="">— 请选择 —</option>
+                        <option>2722</option>
+                        <option>6722</option>
+                        <option>1722</option>
+                        <option>683</option>
+                    </select>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col group">
+                    <label>洗车日期</label>
+                    <input type="date" id="washDate" required>
+                </div>
+                <div class="col group">
+                    <label>类型</label>
+                    <select id="washType">
+                        <option value="仅外观">仅外观</option>
+                        <option value="仅车内">仅车内</option>
+                        <option value="内外全洗">内外全洗</option>
+                    </select>
+                </div>
+            </div>
+            <div class="group">
+                <label>📷 上传洗车照片</label>
+                <input type="file" id="washPhoto" accept="image/*" onchange="previewPhoto(this)">
+                <img id="photoPreview" style="max-width:150px; border-radius:6px; margin-top:8px; display:none;" alt="预览">
+            </div>
+            <div class="group">
+                <label>备注</label>
+                <textarea id="washRemark" rows="2"></textarea>
+            </div>
+            <button type="submit" class="btn btn-primary">✅ 提交打卡</button>
+        </form>
+    </div>
+</div>
+<!-- 5. 我的记录 -->
+<div id="myRecords" class="tab-content hidden">
+    <div class="card">
+        <h2>📋 我的提交记录</h2>
+        <p class="hint">只显示您本人提交的记录 · 查看全部请切换到「全部数据」</p>
+        <div id="myRecordsList"></div>
+    </div>
+</div>
+<!-- 6. 全部数据 -->
+<div id="allRecords" class="tab-content hidden">
+    <div class="card">
+        <h2>📊 全部数据汇总</h2>
+        <p class="hint">🔐 管理员专属 — 显示所有司机提交的记录</p>
+        <button class="btn btn-secondary" onclick="exportAll()">📤 导出全部CSV</button>
+        <div id="allRecordsList"></div>
+    </div>
+</div>
+<!-- 7. 管理后台 -->
+<div id="adminPanel" class="tab-content hidden">
+    <div class="card">
+        <h2>🔧 管理后台</h2>
+        <p class="hint">只有管理员可操作</p>
+        <button class="btn btn-primary" onclick="exportAll()">📤 导出全部数据</button>
+        <button class="btn btn-sm btn-danger" onclick="if(confirm('确定清空所有数据？不可恢复！')){localStorage.clear();location.reload();}">🗑️ 清空所有数据</button>
+    </div>
+</div>
+</div>
+<script>
+const ADMIN_PASSWORD = 'modernedu';
+// 学生名单
+let studentList = [];
+const savedStudents = localStorage.getItem('studentList');
+if(savedStudents) {
+    try { studentList = JSON.parse(savedStudents); }
+    catch { studentList = []; }
+}
+let currentUser = null;
+let attendanceState = {};
+// ========== 登录 ==========
+document.getElementById('driverSelect').addEventListener('change', function(){
+    document.getElementById('enterBtn').disabled = !this.value;
+});
+function loginAsDriver(){
+    const name = document.getElementById('driverSelect').value;
+    if(!name) return;
+    currentUser = {name, role:'driver'};
+    enterSystem();
+}
+function showAdminLogin(){
+    document.getElementById('adminLoginModal').classList.remove('hidden');
+}
+function closeAdminModal(){
+    document.getElementById('adminLoginModal').classList.add('hidden');
+}
+function verifyAdmin(){
+    const input = document.getElementById('adminPwdInput').value;
+    if(input === ADMIN_PASSWORD){
+        currentUser = {name:'管理员', role:'admin'};
+        closeAdminModal();
+        enterSystem();
+    }else{
+        alert('❌ 密码错误');
+    }
+}
+function enterSystem(){
+    document.getElementById('loginArea').classList.add('hidden');
+    document.getElementById('authBanner').classList.remove('hidden');
+    document.getElementById('currentUserName').textContent = currentUser.name;
+    document.getElementById('mainTabs').classList.remove('hidden');
+    document.getElementById('contentArea').classList.remove('hidden');
+    // 司机隐藏管理员专属标签页
+    if(currentUser.role === 'driver'){
+        document.getElementById('tabAllRecords').classList.add('hidden-tab');
+        document.getElementById('tabAdminPanel').classList.add('hidden-tab');
+    } else {
+        document.getElementById('tabAllRecords').classList.remove('hidden-tab');
+        document.getElementById('tabAdminPanel').classList.remove('hidden-tab');
+    }
+    // 司机自动填名字
+    if(currentUser.role === 'driver'){
+        ['trDriver','driver','washDriver'].forEach(id=>{
+            const el=document.getElementById(id); if(el) el.value=currentUser.name;
+        });
+    }
+    document.getElementById('attendDate').valueAsDate = new Date();
+    document.getElementById('checkDate').valueAsDate = new Date();
+    document.getElementById('washDate').valueAsDate = new Date();
+    renderStudentList();
+    switchTab('transport');
+}
+function logout(){
+    currentUser = null;
+    document.getElementById('loginArea').classList.remove('hidden');
+    document.getElementById('authBanner').classList.add('hidden');
+    document.getElementById('mainTabs').classList.add('hidden');
+    document.getElementById('contentArea').classList.add('hidden');
+    document.getElementById('driverSelect').value = '';
+    document.getElementById('enterBtn').disabled = true;
+}
+// ========== 标签页切换 ==========
+document.querySelectorAll('.tab').forEach(tab=>{
+    tab.addEventListener('click', ()=>{
+        const name = tab.dataset.tab;
+        if((name==='allRecords'||name==='adminPanel')&&(!currentUser||currentUser.role!=='admin')){
+            alert('🔐 此功能仅管理员可用');
+            return;
+        }
+        switchTab(name);
+    });
+});
+function switchTab(name){
+    document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+    document.querySelector(`[data-tab="${name}"]`).classList.add('active');
+    document.querySelectorAll('.tab-content').forEach(c=>c.classList.add('hidden'));
+    document.getElementById(name).classList.remove('hidden');
+    if(name==='myRecords') renderMyRecords();
+    if(name==='allRecords') renderAllRecords();
+}
+// ========== 学生名单管理 ==========
+function clearOldStudents(){
+    if(!confirm('确定清空全部学生名单？此操作不可恢复！')) return;
+    studentList = [];
+    localStorage.removeItem('studentList');
+    renderStudentList();
+    alert('✅ 已清空全部学生名单！');
+}
+function removeStudent(id){
+    if(!confirm('确定移除该学生？')) return;
+    studentList = studentList.filter(s => s.id !== id);
+    localStorage.setItem('studentList', JSON.stringify(studentList));
+    renderStudentList();
+}
+function addStudent(){
+    const name = document.getElementById('newStuName').value.trim();
+    const cname = document.getElementById('newStuCn').value.trim();
+    const school = document.getElementById('newStuSchool').value;
+    const sid = document.getElementById('newStuId').value.trim() || `STU_${Date.now()}`;
+    const loc = document.getElementById('newStuLoc').value.trim();
+    
+    if(!name){ alert('请填写英文姓名'); return; }
+    if(!school){ alert('请选择所属学校'); return; }
+    if(studentList.some(s=>s.id === sid)){ alert('该学生已存在！'); return; }
+    
+    studentList.push({id:sid, name, cname, school, location:loc||'未填写'});
+    localStorage.setItem('studentList', JSON.stringify(studentList));
+    
+    document.getElementById('newStuName').value = '';
+    document.getElementById('newStuCn').value = '';
+    document.getElementById('newStuSchool').value = '';
+    document.getElementById('newStuId').value = '';
+    document.getElementById('newStuLoc').value = '';
+    
+    renderStudentList();
+    alert(`✅ 添加成功：${name}（${school}）`);
+}
+function loadAllStudents(){
+    document.getElementById('filterSchool').value = 'all';
+    renderStudentList();
+    alert('📋 已显示全部学生！请用上方「筛选学校」快速找到您要的学生~');
+}
+function renderStudentList(){
+    const filter = document.getElementById('filterSchool').value;
+    const container = document.getElementById('studentList');
+    
+    // 根据筛选条件过滤
+    const showList = filter === 'all' 
+        ? studentList 
+        : studentList.filter(s => s.school === filter);
+    
+    if(!showList.length){
+        container.innerHTML = '<p class="empty">暂无学生 — 请先添加或选择其他学校</p>';
+        return;
+    }
+    
+    container.innerHTML = showList.map(s => {
+        const st = attendanceState[s.id] || {status:'none'};
+        return `
+        <div class="student-card">
+            <div class="student-info">
+                <div class="student-school">🏫 ${s.school}</div>
+                <div class="student-name">${s.name}</div>
+                <div class="student-meta">${s.cname||'—'} · ${s.id} · ${s.location||'未填写'}</div>
+                <div class="attend-buttons">
+                    <button class="ab-btn none ${st.status==='none'?'selected':''}" onclick="setAttend('${s.id}','none')">None</button>
+                    <button class="ab-btn present ${st.status==='present'?'selected':''}" onclick="setAttend('${s.id}','present')">Present</button>
+                    <button class="ab-btn absent ${st.status==='absent'?'selected':''}" onclick="setAttend('${s.id}','absent')">Absent</button>
+                </div>
+            </div>
+            <button class="btn-icon" onclick="removeStudent('${s.id}')" title="移除该学生">🗑️</button>
+        </div>`;
+    }).join('');
+}
+function setAttend(sid, status){
+    if(!attendanceState[sid]) attendanceState[sid] = {status:'none'};
+    attendanceState[sid].status = status;
+    renderStudentList();
+}
+function resetAllStatus(){
+    if(!confirm('确定清空所有状态？')) return;
+    attendanceState = {};
+    renderStudentList();
+}
+function saveAttendance(){
+    const record = {
+        id: Date.now(),
+        type: 'attendance',
+        time: new Date().toLocaleString('zh-CN'),
+        date: document.getElementById('attendDate').value,
+        driver: currentUser.name,
+        filterSchool: document.getElementById('filterSchool').value,
+        data: JSON.parse(JSON.stringify(attendanceState))
+    };
+    saveRecord('attendanceRecords', record);
+    alert('✅ 点名保存成功！');
+}
+// ========== 载送统计提交 ==========
+document.getElementById('transportForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    saveRecord('transportRecords', {
+        type:'transport', driver:document.getElementById('trDriver').value,
+        plate:document.getElementById('trPlate').value,
+        direction:document.getElementById('trDirection').value,
+        count:document.getElementById('trCount').value,
+        remark:document.getElementById('trRemark').value||'无',
+        time:new Date().toLocaleString('zh-CN')
+    });
+    alert('✅ 提交成功！'); e.target.reset();
+    if(currentUser?.role==='driver') document.getElementById('trDriver').value=currentUser.name;
+});
+// ========== 车辆检查提交 ==========
+document.getElementById('checkForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    saveRecord('checkRecords', {
+        type:'check', driver:document.getElementById('driver').value,
+        plate:document.getElementById('plate').value,
+        date:document.getElementById('checkDate').value,
+        period:document.getElementById('period').value,
+        tire:document.getElementById('tire').value,
+        batteryWater:document.getElementById('batteryWater').value,
+        coolingWater:document.getElementById('coolingWater').value,
+        wiperWater:document.getElementById('wiperWater').value,
+        lightHigh:document.getElementById('lightHigh').value,
+        lightLow:document.getElementById('lightLow').value,
+        lightBrake:document.getElementById('lightBrake').value,
+        lightSignal:document.getElementById('lightSignal').value,
+        lightReverse:document.getElementById('lightReverse').value,
+        oilChangeDate:document.getElementById('oilChangeDate').value||'未记录',
+        mileage:document.getElementById('mileage').value||'未填写',
+        ac:document.getElementById('ac').value,
+        fuel:document.getElementById('fuel').value,
+        other:document.getElementById('other').value,
+        remark:document.getElementById('remark').value||'无',
+        time:new Date().toLocaleString('zh-CN')
+    });
+    alert('✅ 检查提交成功！'); e.target.reset();
+    document.getElementById('checkDate').valueAsDate = new Date();
+    if(currentUser?.role==='driver') document.getElementById('driver').value=currentUser.name;
+});
+// ========== 洗车打卡提交 ==========
+function previewPhoto(input){
+    const img=document.getElementById('photoPreview');
+    if(input.files&&input.files[0]){
+        const r=new FileReader();
+        r.onload=e=>{img.src=e.target.result;img.style.display='block';};
+        r.readAsDataURL(input.files[0]);
+    }
+}
+document.getElementById('washForm').addEventListener('submit', e=>{
+    e.preventDefault();
+    saveRecord('washRecords', {
+        type:'wash', driver:document.getElementById('washDriver').value,
+        plate:document.getElementById('washPlate').value,
+        washDate:document.getElementById('washDate').value,
+        washType:document.getElementById('washType').value,
+        photo:document.getElementById('photoPreview').src||null,
+        remark:document.getElementById('washRemark').value||'无',
+        time:new Date().toLocaleString('zh-CN')
+    });
+    alert('✅ 打卡成功！'); e.target.reset();
+    document.getElementById('photoPreview').style.display='none';
+    if(currentUser?.role==='driver') document.getElementById('washDriver').value=currentUser.name;
+});
+// ========== 数据存储与读取 ==========
+function saveRecord(key, record){
+    let arr = JSON.parse(localStorage.getItem(key)||'[]');
+    arr.unshift(record);
+    localStorage.setItem(key, JSON.stringify(arr));
+}
+function getAllRecords(){
+    return [
+        ...JSON.parse(localStorage.getItem('transportRecords')||'[]'),
+        ...JSON.parse(localStorage.getItem('checkRecords')||'[]'),
+        ...JSON.parse(localStorage.getItem('washRecords')||'[]'),
+        ...JSON.parse(localStorage.getItem('attendanceRecords')||'[]')
+    ].sort((a,b)=>b.id - a.id);
+}
+function renderMyRecords(){
+    const mine = getAllRecords().filter(r=>r.driver === currentUser.name);
+    document.getElementById('myRecordsList').innerHTML = mine.length 
+        ? mine.map(r=>renderCard(r)).join('') 
+        : '<p class="empty">暂无记录</p>';
+}
+function renderAllRecords(){
+    const all = getAllRecords();
+    document.getElementById('allRecordsList').innerHTML = all.length 
+        ? all.map(r=>renderCard(r,true)).join('') 
+        : '<p class="empty">暂无记录</p>';
+}
+function renderCard(r, showDriver=false){
+    let title='', content='';
+    switch(r.type){
+        case 'transport': 
+            title='📊 载送统计'; 
+            content=`方向：${r.direction} · 人数：${r.count}人<br>备注：${r.remark}`; 
+            break;
+        case 'check': 
+            title='🚗 车辆检查'; 
+            content=`${r.date} ${r.period}<br>电池水：${r.batteryWater||'未填'}<br>冷却水：${r.coolingWater||'未填'}<br>雨刮水：${r.wiperWater||'未填'}<br>远光：${r.lightHigh} 近光：${r.lightLow} 刹车灯：${r.lightBrake}<br>冷气：${r.ac} 油量：${r.fuel}<br>备注：${r.remark}`; 
+            break;
+        case 'wash': 
+            title='🧼 洗车打卡'; 
+            content=`${r.washDate} · ${r.washType}${r.photo?`<br><img src="${r.photo}" style="max-width:120px; border-radius:4px; margin-top:6px;">`:''}<br>备注：${r.remark}`; 
+            break;
+        case 'attendance': 
+            title='👥 学生点名'; 
+            content=`${r.date} · ${r.filterSchool==='all'?'全部学校':r.filterSchool}<br>${Object.keys(r.data).length}名学生已点名`; 
+            break;
+    }
+    return `<div class="record"><p style="font-weight:bold; margin-bottom:6px;">${title} — ${r.time}${showDriver?` · ${r.driver}`:''}</p>${content}</div>`;
+}
+function exportAll(){
+    const all = getAllRecords();
+    if(!all.length){alert('暂无数据');return;}
+    const csv = ['类型,时间,司机,车牌,详情,备注\n'];
+    all.forEach(r=>{
+        csv.push(`${r.type},${r.time},"${r.driver}","${r.plate||''}","${(r.direction||r.washType||'').replace(/"/g,'""')}","${(r.remark||'').replace(/"/g,'""')}"`);
+    });
+    const blob = new Blob(['\uFEFF'+csv.join('\n')], {type:'text/csv;charset=utf-8'});
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = `载送系统数据_${new Date().toISOString().slice(0,10)}.csv`;
+    a.click();
+}
+</script>
+</body>
+</html>
