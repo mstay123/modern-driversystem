@@ -294,23 +294,23 @@
             <div class="group">
                 <label>🛞 车轮状况 Tyre Condition</label>
                 <select id="tire">
-                    <option value="正常">✅ 正常</option>
-                    <option value="异常">⚠️ 有异常 — 请备注</option>
+                    <option value="正常">✅ 正常 Good pressure</option>
+                    <option value="异常">⚠️ 有异常 — 胎压不足/有破损 Low pressure / Damage</option>
                 </select>
             </div>
             <div class="group">
-                <label>🔋 电池水</label>
+                <label>🔋 电池水 Battery Water Level</label>
                 <select id="batteryWater">
-                    <option value="液位正常">✅ 液位正常，无渗漏</option>
-                    <option value="偏低已补充">⚠️ 偏低 — 需要补充至标准位置</option>
+                    <option value="液位正常">✅ 液位正常 Normal</option>
+                    <option value="偏低已补充">⚠️ 偏低 —已补充 Low — Topped up</option>
                 </select>
             </div>
             <div class="group">
-                <label>💧 冷却水（水箱水）</label>
+                <label>💧 冷却水/水箱水 Coolant/Radiator Water</label>
                 <select id="coolingWater">
-                    <option value="液位正常">✅ 液位正常，无渗漏</option>
-                    <option value="偏低已补充">⚠️ 偏低 — 已补充至标准位置</option>
-                    <option value="异常">❌ 异常 — 频繁需要添水，需报修</option>
+                    <option value="液位正常">✅ 液位正常，无渗漏 Normal — No leakage</option>
+                    <option value="偏低已补充">⚠️ 偏低 — 已补充 Low — Topped up</option>
+                    <option value="异常">❌ 异常 — 频繁需要添水，需报修 Issue — Needs repair</option>
                 </select>
             </div>
             <div class="group">
@@ -345,7 +345,7 @@
             </div>
             <div class="row">
                 <div class="col group">
-                    <label>🛢️ 上次换黑油日期</label>
+                    <label>🛢️ 上次换黑油日期 Engine Oil Last Changed</label>
                     <input type="date" id="oilChangeDate">
                 </div>
                 <div class="col group">
@@ -357,9 +357,9 @@
             <div class="group">
                 <label>❄️ 冷气效果</label>
                 <select id="ac">
-                    <option value="正常">✅ 正常冰凉</option>
-                    <option value="偏弱">⚠️ 制冷偏弱</option>
-                    <option value="不制冷">❌ 不制冷报修</option>
+                    <option value="正常">✅ 正常冰凉 Cold - Good</option>
+                    <option value="偏弱">⚠️ 制冷偏弱 Weak - Not cold enough</option>
+                    <option value="不制冷">❌ 不制冷报修 Not Working - Needs repair</option>
                 </select>
             </div>
             <div class="group">
